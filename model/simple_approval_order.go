@@ -14,14 +14,14 @@ const(
 
 type SimpleApprovalOrder struct{
 	mysql.BaseModel
-	JinJianId string `gorm:"unique" json:"jinJian_id"`
+	JinJianId string `gorm:"unique" json:"jin_jian_id"`
 	JinJianUserName string `json:"jin_jian_user_name"`
 	Status string `json:"status"`
 }
 
 
 
-func (simpleApprovalOrder *SimpleApprovalOrder)CheckIsValidSimpleApprovalOrder() error{
+func (simpleApprovalOrder *SimpleApprovalOrder) CheckIsValidSimpleApprovalOrder() error{
 	if simpleApprovalOrder.JinJianId == "" {
 		return errors.New("id不能微空")
 	}
@@ -34,4 +34,12 @@ func (simpleApprovalOrder *SimpleApprovalOrder)CheckIsValidSimpleApprovalOrder()
 		return  errors.New("status不能为空")
 	}
 	return nil
+}
+
+func GetDefaultSimpleApprovalOrder() *SimpleApprovalOrder{
+	return &SimpleApprovalOrder{
+		JinJianId:           "J20170616007",
+		JinJianUserName:	 "test",
+		Status:              ApprovalStatusPass,
+	}
 }
