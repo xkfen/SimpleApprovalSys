@@ -6,16 +6,16 @@ import (
 	"simpleApproval/db/config"
 	"gcoresys/common/logger"
 	"gcoresys/common/util"
-	)
+)
 
 //创建订单
-func CreateSimpleApprovalOrder(simpleApprovalOrder *model.SimpleApprovalOrder) (err error){
+func CreateSimpleApprovalOrder(simpleApprovalOrder *model.SimpleApprovalOrder) (err error) {
 	if err := simpleApprovalOrder.CheckIsValidSimpleApprovalOrder(); err != nil {
 		return err
 	}
 	if err, tmp := GetSimpleApprovalOrder(&model.SimpleApprovalOrder{JinJianId: simpleApprovalOrder.JinJianId}); err != nil {
 		return err
-	}else {
+	} else {
 		if tmp.ID > 0 {
 			if tmp.JinJianUserName != simpleApprovalOrder.JinJianUserName {
 				return errors.New("该条记录已被 " + tmp.JinJianUserName + " 编辑")
@@ -45,23 +45,22 @@ func GetSimpleApprovalOrder(simpleApprovalOrder *model.SimpleApprovalOrder) (err
 	return nil, result
 }
 
-//  获取初审列表 (包含搜索)
-//func GetAllSimpleApprovalOrderList(typeKey string, status string, username string, name string,
-//	sort string, condition string, page int) ([]model.SimpleApprovalOrder, int) {
-//	//results := []*SimpleApprovalOrder{}
-//	//err := config.GetDb().Where(simpleApprovalOrder).Find()
-//	return transactGetApprovalList("cs", typeKey, status, username, name, sort, condition, page)
-//}
+  //获取初审列表 (包含搜索)
+func GetAllSimpleApprovalOrderList(typeKey string, status string, username string, name string,
+	sort string, condition string, page int) ([]model.SimpleApprovalOrder, int) {
+	//results := []*SimpleApprovalOrder{}
+	//err := config.GetDb().Where(simpleApprovalOrder).Find()
+	return transactGetApprovalList("cs", typeKey, status, username, name, sort, condition, page)
+}
 
 //修改订单
-func UpdateSimpleApprovalOrder(simpleApprovalOrder *model.SimpleApprovalOrder) (err error){
+func UpdateSimpleApprovalOrder(simpleApprovalOrder *model.SimpleApprovalOrder) (err error) {
 	if err = config.GetDb().Model(&model.SimpleApprovalOrder{}).Update(simpleApprovalOrder).Error; err != nil {
 		logger.Error("修改失败", "info", err.Error())
 		return errors.New("修改信息失败，请联系管理员")
 	}
 	return
 }
-
 
 //  transact func 获取审批列表和搜索
 func transactGetApprovalList(approvalType string, typeKey string, status string, username string, name string,
