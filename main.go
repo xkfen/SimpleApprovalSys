@@ -34,7 +34,7 @@ func main() {
 	util.WishNoBug()
 	config.GetSimpleApprovalDbConfig("dev")
 	config.GetDb()
-	r := router.StartHttpRouter() //获得路由实例
+	r := router.GetHttpRouter() //获得路由实例
 	logger.Info("====api gateway 启动  端口 ： " + tmpPort + " ====")
 
 	r.Run(tmpPort)

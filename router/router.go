@@ -5,7 +5,7 @@ import (
 	"gopkg.in/gin-gonic/gin.v1"
 )
 
-func StartHttpRouter() *gin.Engine{
+func GetHttpRouter() *gin.Engine{
 
 	//获得路由实例
 	r := gin.Default()
@@ -13,8 +13,15 @@ func StartHttpRouter() *gin.Engine{
 	g := r.Group("/api/v1")
 	// 路由配置
 	{
-		// 登录
+		// 创建订单
 		g.POST("/createSimpleApprovalOrder", handler.CreateSimpleApprovalOrderHandler)
+		// 修改订单
+		g.POST("/updateSimpleApprovalOrder", handler.UpdateSimpleApprovalOrder)
+
+		// 根据进件id查询订单信息
+		g.POST("/querySimpleApprovalOrderById", handler.QuerySimpleApprovalOrderById)
+
+	//	g.POST("/getSimpleApprovalOrderByJinJianId",hander.GetSimpleApprovalOrderByJinJianId)
 	}
 	return r
 }

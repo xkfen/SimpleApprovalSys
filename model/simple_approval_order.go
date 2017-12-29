@@ -20,7 +20,7 @@ type SimpleApprovalOrder struct {
 
 func (simpleApprovalOrder *SimpleApprovalOrder) CheckIsValidSimpleApprovalOrder() error {
 	if simpleApprovalOrder.JinJianId == "" {
-		return errors.New("id不能微空")
+		return errors.New("id不能为空")
 	}
 
 	if simpleApprovalOrder.JinJianUserName == "" {
@@ -36,7 +36,23 @@ func (simpleApprovalOrder *SimpleApprovalOrder) CheckIsValidSimpleApprovalOrder(
 func GetDefaultSimpleApprovalOrder() *SimpleApprovalOrder {
 	return &SimpleApprovalOrder{
 		JinJianId:       "J20170616007",
-		JinJianUserName: "test",
+		JinJianUserName: "test11111",
 		Status:          ApprovalStatusPass,
 	}
+}
+
+func (simpleApprovalOrder *SimpleApprovalOrder)updateValidateSimpleApprovalOrder() error{
+	if simpleApprovalOrder.JinJianId == "" {
+		return errors.New("id不能为空")
+	}
+
+	if simpleApprovalOrder.JinJianUserName == "" {
+		return errors.New("user name不能为空")
+	}
+
+	if simpleApprovalOrder.Status == "" {
+		return errors.New("status不能为空")
+	}
+	return nil
+
 }

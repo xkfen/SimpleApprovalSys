@@ -42,5 +42,5 @@ func doMigrate(env string) {
 	fmt.Println("do migrate ...")
 	config.GetSimpleApprovalDbConfig(env)
 	db := config.GetDb()
-	db.AutoMigrate(&model.SimpleApprovalOrder{})
+	db.AutoMigrate(&model.SimpleApprovalOrder{}, &model.SimpleApprovalOrderFile{})
 }
