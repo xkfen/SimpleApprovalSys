@@ -23,14 +23,7 @@ func TestRun(t *testing.T) {
 }
 
 func (s *testingSuite) SetupTest() {
-	////config.ClearAllData()
-	//simpleApprovalOrder := model.SimpleApprovalOrder{
-	//	JinJianId:         "123",
-	//	JinJianUserName:     "123",
-	//	Status:            model.ApprovalStatusPass,
-	//}
-	//err := CreateSimpleApprovalOrder(&simpleApprovalOrder)
-	//s.Equal(nil, err)
+
 }
 
 func (s *testingSuite) TearDownTest() {
@@ -40,16 +33,16 @@ func (s *testingSuite) TearDownTest() {
 
 // 创建订单
 func (s *testingSuite) TestCreateOrder(){
-	ao := model.GetDefaultSimpleApprovalOrder();
-	ao.JinJianId = "kay1"
-	ao.JinJianUserName = "112321344"
-	ao.Status = model.ApprovalStatusRefuse
-
-	s.NoError(CreateSimpleApprovalOrder(ao))
-	fmt.Println(ao.JinJianId)
-	fmt.Println(ao.JinJianUserName)
-	fmt.Println(ao.Status)
-	fmt.Println(ao.ID)
+	simpleApprovalOrder := model.SimpleApprovalOrder{
+		JinJianId:         "123",
+		JinJianUserName:     "123",
+		Status:            model.ApprovalStatusRefuse,
+	}
+	s.NoError(CreateSimpleApprovalOrder(&simpleApprovalOrder))
+	fmt.Println(simpleApprovalOrder.JinJianId)
+	fmt.Println(simpleApprovalOrder.JinJianUserName)
+	fmt.Println(simpleApprovalOrder.Status)
+	fmt.Println(simpleApprovalOrder.ID)
 }
 
 
@@ -57,12 +50,7 @@ func (s *testingSuite) TestCreateOrder(){
 func (s *testingSuite) TestQueryOrderByJinJIanId(){
 	ao := model.GetDefaultSimpleApprovalOrder()
 	ao.JinJianId = "J20170616007"
-	//JinJianId := "J20170616007"
-
 	s.NoError(GetSimpleApprovalOrder(ao))
-	//ao := QuerySimpleApprovalOrderById(JinJianId)
-	//s.NoError(QuerySimpleApprovalOrderById(JinJianId))
-
 	fmt.Println(ao.JinJianId)
 	fmt.Println(ao.JinJianUserName)
 	fmt.Println(ao.Status)
@@ -80,7 +68,7 @@ func (s *testingSuite) TestUpdateOrder(){
 	s.Equal(nil, err)
 }
 
-//// 测试强制保存nil值到数据库
+// 测试强制保存nil值到数据库
 func (s *testingSuite) TestUpdateOrderWithBlankValues(){
 	order := model.GetDefaultSimpleApprovalOrder()
 	order.Status = model.ApprovalStatusRepulse
@@ -90,46 +78,35 @@ func (s *testingSuite) TestUpdateOrderWithBlankValues(){
 }
 
 // 文件上传
-func (s *testingSuite) TestCreateOrderFile(){
+func (s *testingSuite) TestUploadOrderFile(){
 	file := model.GetDefaultSimpleApprovalOrderFile()
 
-	s.NoError(CreateOrderFile(file))
+	s.NoError(UploadOrderFile(file))
 	fmt.Println(file.FileId)
 	fmt.Println(file.FileName)
 	fmt.Println(file.FileUrl)
 	fmt.Println(file.FileType)
 	fmt.Println(file.Desc)
 }
-//func (s *testingSuite) NewSimpleApprovalOrders(count int) {
-//	for i := 0; i < count; i++ {
-//		ao := model.GetDefaultSimpleApprovalOrder()
-//		ao.JinJianId = fmt.Sprintf("JinjianIdSLZ%v%v", i, time.Now().UnixNano() )
-//		ao.JinJianUserName = fmt.Sprintf("JinJianUserNameSLZ%v%v", i, time.Now().UnixNano())
-//		ao.Status = fmt.Sprintf("StatusSLZ%v%v", i, time.Now().UnixNano())
-//		time.Sleep(7 * time.Millisecond)
-//		s.NoError(CreateSimpleApprovalOrder(ao))
-//	}
-//
-//}
 
-//func (s *testingSuite) QuerySimpleOrderByJinJianId(count int){
-//	for i := 0; i < count; i++ {
-//		ao := model.GetDefaultSimpleApprovalOrder()
-//		ao.JinJianId = "12344"
-//		//ao.JinJianId = fmt.Sprintf("JinjianIdSLZ%v%v", i, time.Now().UnixNano())
-//		//ao.JinJianUserName = fmt.Sprintf("JinJianUserNameSLZ%v%v", i, time.Now().UnixNano())
-//		//ao.Status = fmt.Sprintf("StatusSLZ%v%v", i, time.Now().UnixNano())
-//		time.Sleep(7 * time.Millisecond)
-//		s.NoError(GetSimpleApprovalOrder(ao))
-//		fmt.Println(ao.JinJianId)
-//		fmt.Println(ao.JinJianUserName)
-//		fmt.Println(ao.Status)
-//
-//	}
-//}
+// 测试根据文件url查找文件
+func (s *testingSuite) TestQueryOrderFile()  {
+	file := model.GetDefaultSimpleApprovalOrderFile()
+	s.NoError(QueryOrderFile(file.FileUrl))
+	fmt.Println(file.FileUrl)
+	fmt.Println(file.FileName)
+	fmt.Println(file.FileType)
+	fmt.Println(file.FileId)
+	fmt.Println(file.Desc)
+}
 
-func TestGetSimpleApprovalOrder(t *testing.T) {
-	err := CreateSimpleApprovalOrder(&model.SimpleApprovalOrder{})
-	fmt.Println(err.Error())
-
+// 测试下载文件：根据文件url下载
+func (s *testingSuite) TestDownloadFile(){
+	file := model.GetDefaultSimpleApprovalOrderFile()
+	s.NoError(DownloadFile(file.FileUrl))
+	fmt.Println(file.FileUrl)
+	fmt.Println(file.FileName)
+	fmt.Println(file.FileType)
+	fmt.Println(file.FileId)
+	fmt.Println(file.Desc)
 }

@@ -7,11 +7,11 @@ import (
 	"simpleApproval/db/config"
 	)
 
-func CreateOrderFile(orderFile *model.SimpleApprovalOrderFile) error {
+func UploadOrderFile(orderFile *model.SimpleApprovalOrderFile) error {
 	if err := orderFile.IsValidApprovalOrderFile(); err != nil {
 		return err
 	}
-	if err, tmp := GetSimpleApprovalOrderFile(&model.SimpleApprovalOrderFile{FileId: orderFile.FileId}); err != nil {
+	if err, tmp := QuerySimpleApprovalOrderFile(&model.SimpleApprovalOrderFile{FileId: orderFile.FileId}); err != nil {
 		return err
 	} else {
 		if tmp.ID > 0 {
@@ -30,10 +30,10 @@ func CreateOrderFile(orderFile *model.SimpleApprovalOrderFile) error {
 	}
 }
 
-
-func GetSimpleApprovalOrderFile(order *model.SimpleApprovalOrderFile) (error, *model.SimpleApprovalOrderFile) {
+// 查询文件
+func QuerySimpleApprovalOrderFile(order *model.SimpleApprovalOrderFile) (error, *model.SimpleApprovalOrderFile) {
 	result := &model.SimpleApprovalOrderFile{}
-	err := config.GetDb().Where(order).First(result).Error
+	err := config.GetDb().Model(&model.SimpleApprovalOrderFile{}).Where(order).First(result).Error
 	if err != nil && err.Error() != "record not found" {
 		logger.Warn("查询失败", "info", err.Error())
 		return errors.New("查询失败, 请联系管理员"), result
@@ -42,6 +42,17 @@ func GetSimpleApprovalOrderFile(order *model.SimpleApprovalOrderFile) (error, *m
 }
 
 
+// 查询文件
+func QueryOrderFile(fileUrl string) (error, *model.SimpleApprovalOrderFile) {
+	result := &model.SimpleApprovalOrderFile{}
+	err := config.GetDb().Model(&model.SimpleApprovalOrderFile{}).Where("file_url = ?", fileUrl).First(result).Error
+	if err != nil && err.Error() != "record not found" {
+		logger.Warn("查询失败", "info", err.Error())
+		return errors.New("查询失败, 请联系管理员"), result
+	}
+	return nil, result
+}
+
 func UploadApprovalFileV1(file *model.SimpleApprovalOrderFile, opName string) (err error) {
 	if err = file.IsValidApprovalOrderFile(); err != nil {
 		return
@@ -49,8 +60,23 @@ func UploadApprovalFileV1(file *model.SimpleApprovalOrderFile, opName string) (e
 	//asyncNewApprovalLog(&model.ApprovalLog{ApprovalJinjianId: file.JinjianId, ApprovalName: opName,
 	//	ApprovalStatus: opName + "上传文件"  + "，文件名：" + file.FileName,
 	//	ApprovalType: "cs"})
-	if err = config.GetDb().Create(file).Error; err != nil {
+	if err = config.GetDb().Model(&model.SimpleApprovalOrderFile{}).Create(file).Error; err != nil {
 		return
 	}
 	return
+}
+
+// 测试文件下载
+func DownloadFile(fileUrl string) (err error){
+	if fileUrl == "" {
+		logger.Info("文件路径不能为空", "info", err.Error())
+		return errors.New("查询失败, 请联系管理员")
+	}
+
+	if tempErr := config.GetDb().Model(&model.SimpleApprovalOrderFile{}).Where("file_url",fileUrl).Error;tempErr != nil{
+		logger.Info("文件不存在", "info", err.Error())
+		return errors.New("文件不存在, 请检查文件路径")
+	}
+	return
+
 }

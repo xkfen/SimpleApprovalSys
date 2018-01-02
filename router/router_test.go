@@ -9,6 +9,7 @@ import (
 	"gcoresys/common/logger"
 	"simpleApproval/db/config"
 	//"encoding/json"
+	"encoding/json"
 )
 
 type iHttpReqSuite struct {
@@ -50,26 +51,39 @@ func TestRun(t *testing.T) {
 	suite.Run(t, new(iHttpReqSuite))
 }
 
-////测试创建订单
-//func (s *iHttpReqSuite) TestCreateSimpleApprovalOrder() {
-//	time.Sleep(100 * time.Millisecond)
-//	resp := httpexpect.New(s.T(), baseURL).
-//		POST("/createSimpleApprovalOrder").
-//		WithJSON(model.SimpleApprovalOrder{
-//		JinJianId:       "J2017061",
-//		JinJianUserName: "123",
-//		Status:          "123",
-//	}).Expect()
-//	resp.Status(200).JSON()
-//	logger.Info("res", "data", resp.Body().Raw())
-//	var respJson RespJson
-//	err := json.Unmarshal([]byte(resp.Body().Raw()), &respJson)
-//	s.Equal(nil, err)
-//	s.Equal(true, respJson.Success)
-//}
+// 测试创建订单
+func (s *iHttpReqSuite) TestCreateSimpleApprovalOrder() {
+	time.Sleep(100 * time.Millisecond)
+	resp := httpexpect.New(s.T(), baseURL).
+		POST("/createSimpleApprovalOrder").
+		WithJSON(model.SimpleApprovalOrder{
+		JinJianId:       "J2017061",
+		JinJianUserName: "123",
+		Status:          "123",
+	}).Expect()
+	resp.Status(200).JSON()
+	logger.Info("res", "data", resp.Body().Raw())
+	var respJson RespJson
+	err := json.Unmarshal([]byte(resp.Body().Raw()), &respJson)
+	s.Equal(nil, err)
+	s.Equal(true, respJson.Success)
+}
 
 
-//测试修改订单
+// 测试查询订单
+func(s *iHttpReqSuite) TestQueryOrderByJinJianId(){
+	time.Sleep(100 * time.Millisecond)
+	resp := httpexpect.New(s.T(), baseURL).
+		POST("/querySimpleApprovalOrderById").
+		WithJSON(model.SimpleApprovalOrder{
+		JinJianId:       "123",
+	}).Expect()
+	resp.Status(200).JSON()
+	logger.Info("res","data", resp.Body().Raw())
+
+}
+
+// 测试修改订单
 func (s *iHttpReqSuite) TestUpdateSimpleApprovalOrder(){
 	time.Sleep(100 * time.Millisecond)
 	resp := httpexpect.New(s.T(), baseURL).
